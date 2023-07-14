@@ -48,7 +48,7 @@ const Navbar = () => {
         
     ))}
      </ul>
-     <div className="border flex items-center  px-4 rounded-md">
+     <div className="border flex items-center px-4 rounded-md bg-primaryWhite">
         <Link href={`/search/${searchQuery}`}><BiSearch/></Link>
         <input value={searchQuery} 
         onChange={(e)=> setSearchQuery(e.target.value)}
