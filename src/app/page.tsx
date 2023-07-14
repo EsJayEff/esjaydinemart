@@ -27,11 +27,11 @@ export default async function Home() {
 //  console.log(result)
  return (
     <div>
-     {/* <Hero/>
+     <Hero/>
      <ProductTypes/> 
     <ProductCarousel ProductData={result}/>
     <Jewellery/>
-    <NewsLetter/> */}
+    <NewsLetter/>
     </div>
       )
 }
