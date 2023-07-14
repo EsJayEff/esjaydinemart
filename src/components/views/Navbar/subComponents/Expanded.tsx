@@ -5,7 +5,7 @@ import { NavbarItemType } from "@/components/utils/NavbarArrayAndTypes";
 import Link from "next/link";
 import { HiOutlineChevronDown } from "react-icons/hi";
 
-const Expanded: FC<{ item: NavbarItemType }> = ({ item }) => {
+const Expanded: FC<{ key: number , item: NavbarItemType }> = ({ key, item }) => {
   const [isExpanded, setisExpanded] = useState<boolean>(false);
   const [isTimeOut, setisTimeOut] = useState<boolean>(false);
 
@@ -24,7 +24,7 @@ function handleExpand(){
         onClick={handleExpand}
         className=" py-2 px-3 flex justify-between hover:bg-gray-400 rounded-md duration-300"
       >
-        <Link href={item.href}>{item.label}</Link>
+        <Link key={key} href={item.href}>{item.label}</Link>
         {item.isDropDown ? (
           <HiOutlineChevronDown
             className="mt-1 rotate-180 group-hover:rotate-0 duration-300"
