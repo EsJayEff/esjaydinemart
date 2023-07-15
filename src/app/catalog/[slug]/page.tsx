@@ -3,6 +3,7 @@ import ProductDetail from "@/components/views/ProductDetail";
 import ContextWrapper from "@/global/context";
 
 // This is for Metadata generation
+
 export async function generateMetadata({ params }: { params: { slug: string } }) {
     const slug = params.slug;
 
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 // This function will fetch particular data of product using particular slug
+
 async function fetchPreviewData(slug: string) {
     let res = await fetch(`https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2023-07-04/data/query/production?query=*%5B_type+%3D%3D+%22products%22+%26%26+slug.current+%3D%3D+%22${slug}%22%5D%0A++`)
     return res.json();
@@ -26,6 +28,7 @@ async function fetchPreviewData(slug: string) {
 
 
 // This function will make static pages of every product
+
 export async function generateStaticParams() {
     let res = await fetch(`https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2023-07-04/data/query/production?query=*[_type == 'products']`, {
         next: {

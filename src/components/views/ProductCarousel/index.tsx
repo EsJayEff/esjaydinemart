@@ -4,8 +4,7 @@ import React, { Component, FC, ReactNode } from 'react'
 import { oneProductType } from '@/components/utils/ProductsDataArrayAndType';
 import Card from '../Card';
 
-
-const ProductCarousel = ({ ProductData }:any) => {
+const ProductCarousel: FC<{ ProductData: Array<oneProductType> }> = ({ ProductData }) => {
     let initialX: number;
     let isDragging = false;
     let tabBox: any;

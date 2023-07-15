@@ -3,29 +3,28 @@ import { responseType } from '@/components/utils/ProductsDataArrayAndType';
 import Hero from '@/components/views/Hero'
 import ProductCarousel from '@/components/views/ProductCarousel';
 import ProductTypes from '@/components/views/ProductTypes'
-import { client } from "../../sanity/lib/client"
+// import { client } from "../../sanity/lib/client"
 import Jewellery from '@/components/views/Jewellery'
 import NewsLetter from '@/components/views/NewsLetter';
 
-// async function fetchAllProductsData(){
-//   let res= await fetch(`${BASE_PATH_FOR_API}/api/products`);
-//   if (!res.ok){
-//     throw new Error("Failed to fetch")
-//   }
-//   return res.json();
-// }
+async function fetchAllProductsData(){
+  let res= await fetch(`https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2023-07-04/data/query/production?query=*[_type == 'products']`,
+  {
+    next: {
+      revalidate: 60
+    }
+  });
 
-export const fetchAllProductsData = async () => {
-  const productsQuery = '*[_type == "products"]';
-  const products = await client.fetch(productsQuery);
-  return products;
-};
+  if (!res.ok) {
+    throw new Error("Failed to fetch")
+  }
 
+  return res.json();
+}
 
 export default async function Home() {
- const result : responseType = await fetchAllProductsData(); 
-//  console.log(result)
- return (
+  let {result} : responseType = await fetchAllProductsData(); 
+  return (
     <div>
      <Hero/>
      <ProductTypes/> 
