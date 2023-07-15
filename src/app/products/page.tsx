@@ -1,27 +1,27 @@
-import React from 'react'
-import BASE_PATH_FOR_API from '@/components/shared/BasePath';
-import AllProductsComponent from '@/components/views/AllProducts';
-import { oneProductType } from '@/components/utils/ProductsDataArrayAndType';
 
-async function fetchAllProducts (){
-  let res = await fetch(`${BASE_PATH_FOR_API}/api/products?start=0&end=10`, { next: {
-    revalidate:120
-  }})
-  
-  if(!res.ok){
-    throw new Error ("Failed to fetch")
+import React from 'react'
+import AllProductsComponent from '@/components/views/AllProducts';
+import { responseType } from '@/components/utils/ProductsDataArrayAndType';
+
+async function fetchAllProductsData() {
+  let res = await fetch(`https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2023-07-04/data/query/production?query=*[_type == 'products']`, {
+    next: {
+          revalidate: 120,
+      }
+})
+ 
+  if (!res.ok) {
+      throw new Error("Failed to fetch")
   }
   return res.json();
-}
-
-
+};
 
 
 const Products = async () => {
-  const ProductsData = await fetchAllProducts();
+  const {result} : responseType = await fetchAllProductsData();
   return (
     <div>
-      <AllProductsComponent ProductData={ProductsData}/>
+      <AllProductsComponent ProductData={result}/>
     </div>
   )
 }

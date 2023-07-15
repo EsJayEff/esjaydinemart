@@ -1,9 +1,7 @@
-import BASE_PATH_FOR_API from '@/components/shared/BasePath';
 import { responseType } from '@/components/utils/ProductsDataArrayAndType';
 import Hero from '@/components/views/Hero'
 import ProductCarousel from '@/components/views/ProductCarousel';
 import ProductTypes from '@/components/views/ProductTypes'
-// import { client } from "../../sanity/lib/client"
 import Jewellery from '@/components/views/Jewellery'
 import NewsLetter from '@/components/views/NewsLetter';
 
