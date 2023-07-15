@@ -1,8 +1,9 @@
 "use client";
 
-import React, { Component, FC, ReactNode } from 'react'
+import React, { FC } from 'react'
 import { oneProductType } from '@/components/utils/ProductsDataArrayAndType';
 import Card from '../Card';
+
 
 const ProductCarousel: FC<{ ProductData: Array<oneProductType> }> = ({ ProductData }) => {
     let initialX: number;
@@ -16,7 +17,7 @@ const ProductCarousel: FC<{ ProductData: Array<oneProductType> }> = ({ ProductDa
     }
 
     // Desktop functions
-    function mouseMoves(e: any) {
+    function mouseMoves(e: any): void {
         if (!isDragging) return;
         if (tabBox) {
             tabBox.scrollLeft -= e.movementX;
