@@ -10,7 +10,8 @@ import { client } from "../../../../sanity/lib/client";
 import imageUrlBuilder from "@sanity/image-url";
 import { BsCart2 } from "react-icons/bs";
 import PortableText from "react-portable-text";
-import ContextWrapper, { cartContext } from "@/global/context";
+import { cartContext } from "@/global/context";
+import toast, { Toaster } from "react-hot-toast";
 
 const builder: any = imageUrlBuilder(client);
 function urlFor(source: any) {
@@ -28,23 +29,37 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
   }
 
   function decrementTheQuantity() {
-    if (quantity !== 0) {
+    if (quantity !== 1) {
       setQuantity(quantity - 1);
     }
   }
 
-  function handleAddToCart(item: oneProductType) {
-    let dataToAddInCart = {
+  const notification = (title: string) => {
+    toast(` ${quantity} ${title} added to Cart`, {
+      icon: '👏',
+      position: "top-right"
+    })
+  };
+
+  const notificationError = (title: string) => {
+    toast(title, {
+      position: "top-right"
+    })
+  };
+
+
+  function handleAddToCart() {
+  let dataToAddInCart = {
       productId: item._id,
       quantity: quantity,
     };
     dispatch({ payload: "addToCart", data: dataToAddInCart });
-    console.log("This is Item", item._id);
-  }
+    notification(item.productName);
+ }
 
   return (
-    <ContextWrapper>
-      <div>
+     <div>
+      <Toaster />
         <div className="flex flex-col lg:flex-row justify-center items-center py-7">
           {/* left */}
           <div className="flex gap-x-4 md:gap-x-8">
@@ -126,7 +141,7 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
             <div className="flex gap-x-8 items-center">
               <button
                 onClick={() => {
-                  handleAddToCart(item);
+                  handleAddToCart()
                 }}
                 className="flex items-center text-white bg-gray-900 border border-gray-500 px-4 py-2"
               >
@@ -170,7 +185,6 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
           </div>
         </div>
       </div>
-    </ContextWrapper>
   );
 };
 

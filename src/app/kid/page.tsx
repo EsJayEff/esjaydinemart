@@ -23,7 +23,7 @@ async function fetchAllProductsData() {
 const Kid = async ({ params }: { params: { ktype: string } }) => {
   let res: responseType = await fetchAllProductsData();
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 py-10 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 py-10 lg:grid-cols-3 gap-4">
       {res.result.map((items: oneProductType, index: number) => (
         <Card key={index} singleProductData={items} />
       ))}

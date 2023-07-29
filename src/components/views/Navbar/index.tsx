@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { NavbarArray, NavbarItemType} from '@/components/utils/NavbarArrayAndTypes'
 import Link from 'next/link'
 import {BiSearch} from "react-icons/bi"
-import {BsCart2} from "react-icons/bs"
 import { GiHamburgerMenu } from "react-icons/gi";
 import {HiOutlineChevronDown} from "react-icons/hi"
 import { IoMdClose } from "react-icons/io";
@@ -12,11 +11,12 @@ import {Logo} from "@/components/assets"
 import DropDown from "./subComponents/DropDown";
 import Expanded from "./subComponents/Expanded";
 import { useRouter } from "next/navigation";
+import ContextWrapper from "@/global/context";
+import CartState from "./subComponents/CartState";
 
 const Navbar = () => {
   const router = useRouter();
    const [isNavBarOpen, setisNavBarOpen] = useState<boolean>(false);
-   const [cartItemNumber, setcartItemNumber] = useState<number>(0);
    const [searchQuery, setSearchQuery] = useState("");
 
   function handleSearch(e:any){
@@ -28,7 +28,8 @@ const Navbar = () => {
 
 
    return (
-   <div className="sticky top-0 backdrop-blur-lg  bg-opacityDownColor z-50">
+  <ContextWrapper>
+   <div className="sticky top-0 backdrop-blur-lg  bg-opacityDownColor z-20">
     <div className="py-6 flex justify-between items-center space-x-12">
         <div className="w-36 flex-shrink-0">
     <Link href="/">
@@ -56,10 +57,7 @@ const Navbar = () => {
         type="text" className="pl-1 pr-4 py-1 w-80 focus:outline-none"
         placeholder='Search in Our Store'/>
      </div>
-     <div className="flex-shrink-0 relative w-11 h-11 bg-gray-300 rounded-full flex items-center justify-center">
-        <div className="w-4 h-4 absolute top-1 right-2 bg-red-400 text-xs font-light rounded-full flex justify-center items-center">{cartItemNumber}</div>
-        <BsCart2 size={24}/>
-        </div>
+    <CartState/>
      </div>
 
      <div onClick={() => setisNavBarOpen(!isNavBarOpen)}>
@@ -76,6 +74,7 @@ const Navbar = () => {
 </div>
       { isNavBarOpen && <MobileNavbar/>}
       </div>
+</ContextWrapper>    
   )
 }
 
