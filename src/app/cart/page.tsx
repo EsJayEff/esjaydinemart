@@ -16,7 +16,9 @@ async function fetchAllStoreProducts() {
 const Cart = async () => {
   let {result} : responseType = await fetchAllStoreProducts(); 
   return (
+    <ContextWrapper>
     <CartComponent allProductsOfStore={result}/>
+    </ContextWrapper>
   )
 }
 

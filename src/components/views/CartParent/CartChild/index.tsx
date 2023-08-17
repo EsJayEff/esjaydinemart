@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { Feature } from "@/components/assets";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { oneProductType } from "@/components/utils/ProductsDataArrayAndType";
 import { urlFor } from "../../../../../sanity/lib/image";
+import { cartContext } from "@/global/context";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface propsType {
   ProductArray: oneProductType[];
@@ -17,25 +19,107 @@ const CartComponent = ({
   allProductsOfStore: Array<oneProductType>;
 }) => {
   const [allProductsInCart, setAllProductsInCart] = useState<any>([]);
+  let {userData, cartArray, dispatch, loading} = useContext(cartContext);
+  const [totalPrice, setTotalPrice] = useState(0);
+  let router = useRouter();
+
+
+function priceSubTotal(){
+  let originalToSend: number = 0;
+  allProductsInCart && allProductsInCart.forEach((element: oneProductType) => {
+      let subTotalPrice = element.quantity * element.price;
+      originalToSend = originalToSend + subTotalPrice;
+  });
+  if (originalToSend !== 0 && cartArray.length !== 0 ) {
+    setTotalPrice(originalToSend);
+    router.refresh();   
+  } else {
+    originalToSend = 0;
+    setTotalPrice(originalToSend);
+  }
+}
+
+useEffect(()=>{
+priceSubTotal();
+},[allProductsInCart])
+
+function handleRemove(product_id:string){
+  if(userData){
+  let user_id= userData.uuid
+  dispatch("removeFromCart", {product_id, user_id} );
+}
+}
+
+async function handleIncrementByOne(product_id:string, price :any){
+  let stableQuantity:number = 0;
+  cartArray.forEach((element:any)=>
+  {
+    if(element.product_id == product_id){
+      stableQuantity = element.quantity;
+    }
+  });
+ 
+await dispatch("updateCart", {product_id:product_id, quantity:stableQuantity+1,user_id:userData.uuid, price:price})
+notificationError("Quantity increased by one");
+  
+}
+
+async function handleDecrementByOne(product_id:string, price :any){
+  let stableQuantity:number = 0;
+  cartArray.forEach((element:any)=>
+  {
+    if(element.product_id == product_id){
+      stableQuantity = element.quantity;
+    }
+  });
+  if (stableQuantity <= 1 ){
+    notificationError("Quantity less than one is not accepeted");
+  } else {
+  await dispatch("updateCart", {product_id:product_id, quantity:stableQuantity-1,user_id:userData.uuid,price:price})
+  notificationError("Quantity decreased by one");
+  }
+}
+
+
+const notificationError = (title: string) => {
+  toast(title, {
+    position: "top-right"
+  })
+};
+
+
+// used to check when testing using local storage
 
   useEffect(() => {
-    let stateStorage: any = localStorage.getItem("cart") as string;
-    stateStorage = JSON.parse(stateStorage);
-    if (stateStorage) {
+    // let stateStorage: any = localStorage.getItem("cart") as string;
+    // stateStorage = JSON.parse(stateStorage);
+    if (cartArray) {
       let data = allProductsOfStore.filter((item: oneProductType) => {
-        for (let index = 0; index < stateStorage.length; index++) {
-          let element = stateStorage[index];
-          if (element.productId === item._id) {
+        for (let index = 0; index < cartArray.length; index++) {
+          let element:any = cartArray[index];
+          if (element.product_id === item._id && element.user_id === userData.uuid) {
             return true;
           }
         }
       });
-      setAllProductsInCart(data);
-    }
-  }, []);
+     let updatedData = data.map((elem:oneProductType)=>{
+      for (let index=0; index< cartArray.length; index ++){
+        let element:any = cartArray[index];
+        if(element.product_id === elem._id){
+          return{
+            ...elem,
+            quantity: element.quantity,
+          }
+        }
+      }
+     })
+setAllProductsInCart(updatedData);
+} 
+}, [cartArray]);
 
   return (
     <div className="py-6 px-2 md:px-10">
+      <Toaster/>
       {/* {First} */}
       <div className="py-6">
         <h1 className="text-xl font-semibold text-grey-900">Shopping Cart</h1>
@@ -61,7 +145,7 @@ const CartComponent = ({
                   <h2 className="md:text-2xl font-light text-gray-700">
                     {item.productName}
                   </h2>
-                  <RiDeleteBin6Line size={28} />
+                  <div className="cursor-pointer" onClick={()=>handleRemove(item._id)}><RiDeleteBin6Line size={28} /></div>
                 </div>
                 <p className="text-gray-400 font-medium">
                   {item.productTypes[1] ? item.productTypes[1] : "All"}
@@ -72,14 +156,21 @@ const CartComponent = ({
                 </h4>
                 <div className="flex justify-between">
                   <p className="font-semibold md:text-lg ">${item.price}</p>
-                  <div className="flex gap-2 items-center text-lg">
-                    <div className="select-none cursor-pointer flex justify-center items-center w-8 h-8 rounded-full bg-gray-200">
+                  <div className={`flex gap-2 ${loading ? "opacity-50" : "opacity-100"}items-center text-lg`}>
+                    <button 
+                    onClick={()=>handleDecrementByOne(item._id, item.price)}
+                    className="select-none cursor-pointer flex justify-center items-center w-8 h-8 rounded-full bg-gray-200">
                       -
-                    </div>
-                    <p>5</p>
-                    <div className="border select-none cursor-pointer flex justify-center items-center w-8 h-8 rounded-full  border-gray-800">
+                    </button>
+                    <p>
+                     {item.quantity}
+                    </p>
+                    <button 
+                    onClick={()=>handleIncrementByOne(item._id,item.price)}
+                    disabled={loading}
+                    className="border select-none cursor-pointer flex justify-center items-center w-8 h-8 rounded-full  border-gray-800">
                       +
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -93,11 +184,11 @@ const CartComponent = ({
           <h6 className="font-semibold text-xl ">Order Summary</h6>
           <div className="flex justify-between ">
             <p className="text-lg font-light">Quantity</p>
-            <p>3 Products</p>
+            <p>{cartArray.length}</p>
           </div>
           <div className="flex justify-between ">
             <p className="text-lg font-light">SubTotal:</p>
-            <p>$ 585</p>
+            <p>${totalPrice}</p>
           </div>
           <button className="text-white bg-gray-900 border-gray-800 py-2 px-4 w-full">
             Process to Checkout

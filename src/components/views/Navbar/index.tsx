@@ -82,7 +82,10 @@ export default Navbar
 
 const MobileNavbar = () => {
   return (
-      <div className="w-full px-6 py-4 bg-gray-100 lg:hidden mb-4">
+      <div className="w-full px-6 py-6 bg-gray-100 lg:hidden mb-6">
+        <div className="flex justify-center px-6 py-6 mb-6">
+        <CartState/>
+        </div>
           {
               NavbarArray.map((item: NavbarItemType, index: number) => {
                   return (

@@ -5,43 +5,118 @@ import { cartReducer } from '../reducer';
 import { auth } from '@/lib/firebase';
 import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import BASE_PATH_FOR_API from '@/components/shared/BasePath';
 export const cartContext = createContext<any>(null);
+
+
+// For User Management Code
+interface indexForError {
+    [key: string]: string
+};
 
 
 
 const ContextWrapper : FC <{children : ReactNode}> = ({children}) => {
-const cartInitializer = {
-    cart:[],
- }
 
+// Calling APIs to fetch the data
 
-
-const [state, dispatch] = useReducer(cartReducer,cartInitializer); 
-
-useEffect(() => {
- let cart = localStorage.getItem("cart") as string;
-
- if (cart === null)
- {
-    const ISSERVER = typeof window === "undefined";
-    if (!ISSERVER) localStorage.setItem("cart", JSON.stringify(state.cart));
- }
- else {
-     cartInitializer.cart = JSON.parse(cart);
- }
-})
-
-useEffect(() =>{ 
-localStorage.setItem("cart", JSON.stringify(state.cart))
-},[state])
-
-
-interface indexForError {
-    [key: string]: string
-};
+const [cartArray, setCartArray] = useState<any>([]);
 const [loading, setLoading] = useState(false);
 const [userData, setUserData] = useState<any>();
 let router = useRouter();
+const [quantity, setQuantity] = useState(0);
+
+async function fetchApiForAllCartItems(){
+let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
+if(!res.ok){
+    throw new Error ("Failed to Fetch something went wrong")
+}
+let dataToReturn = await res.json();
+setCartArray((prev:any)=> dataToReturn.allCartData);
+if (dataToReturn){
+return true;
+}
+}
+
+
+useEffect(() => {
+    if (cartArray.length !== 0) {
+        setQuantity(cartArray.length);
+    }else{
+        let zeroVariable=0;
+        setQuantity(zeroVariable);
+    }
+
+}, [cartArray,quantity])
+
+
+// Function to call on page load
+useEffect(() => {
+    fetchApiForAllCartItems();
+}, [userData, cartArray]);
+
+
+async function dispatch(payload:string, data:any){
+    // console.log("Database Array of Cart:", cartArray);
+    if (payload === "addToCart"){
+        console.log("Function running for add to cart");
+        await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`,{
+            method: "POST",
+            body:JSON.stringify(data),
+        });
+    }else if (payload === "removeFromCart"){
+        console.log("Function running for remove from cart");
+        await fetch(`${BASE_PATH_FOR_API}/api/cartfunc?product_id=${data.product_id}&user_id=${data.user_id}`,{
+            method: "DELETE",
+        });
+    }else if (payload === "updateCart"){
+        console.log("Function running update to cart");
+        setLoading(true);
+        await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`,{
+            method: "PUT",
+            body:JSON.stringify(data),
+        });
+
+        setLoading(false);
+    }
+    let resp = await fetchApiForAllCartItems();
+    if(resp){
+    return "success";
+} else {
+    return "unsuccessful"
+}
+}
+
+
+
+// cart Management when using local storage for testing
+// const cartInitializer = {
+//     cart:[],
+//  }
+// const [state, dispatch] = useReducer(cartReducer,cartInitializer); 
+
+// useEffect(() => {
+//  let cart = localStorage.getItem("cart") as string;
+
+//  if (cart === null)
+//  {
+//     const ISSERVER = typeof window === "undefined";
+//     if (!ISSERVER) localStorage.setItem("cart", JSON.stringify(state.cart));
+//  }
+//  else {
+//      cartInitializer.cart = JSON.parse(cart);
+//  }
+// })
+
+// useEffect(() =>{ 
+// localStorage.setItem("cart", JSON.stringify(state.cart))
+// },[state.cart])
+
+
+
+
+// User Management 
+
 const [errorsOfFirebase, setErrorsOfFirebase] = useState({
     key: "",
     errorMessage: "",
@@ -56,7 +131,7 @@ useEffect(() => {
                 displayName: user.displayName,
                 email: user.email,
                 uuid: user.uid,
-                photoUrl: user.photoURL,
+                // photoUrl: user.photoURL,
                 emailVerified: user.emailVerified
             })
         } else {
@@ -119,7 +194,7 @@ function signUpViaGoogle() {
                 displayName: userData.user.displayName,
                 email: userData.user.email,
                 uuid: userData.user.uid,
-                photoUrl: userData.user.photoURL,
+                // photoUrl: userData.user.photoURL,
                 emailVerified: userData.user.emailVerified
             });
             router.push("/")
@@ -145,7 +220,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
     if (user) {
         updateProfile(user, {
             displayName: userName, 
-            photoURL: "https://sigc.edu/sigc/ad-sigc/datas/images/user.png"
+            // photoURL: "https://sigc.edu/sigc/ad-sigc/datas/images/user.png"
         }).then(() => {
             setLoading(false);
             window.location.reload();
@@ -158,7 +233,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
 
 
 return (
-    <cartContext.Provider value={{state, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
+    <cartContext.Provider value={{cartArray, quantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
         {children}
     </cartContext.Provider>
   )

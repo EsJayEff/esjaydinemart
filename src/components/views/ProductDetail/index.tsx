@@ -19,7 +19,7 @@ function urlFor(source: any) {
 }
 
 const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
-  let { dispatch } = useContext(cartContext);
+  let { userData, dispatch, cartArray } = useContext(cartContext);
   const [imageForPreviewOfSelected, setImageForPreviewOfSelected] =
     useState<string>(item.image[0]._key);
   const [quantity, setQuantity] = useState(1);
@@ -49,12 +49,25 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
 
 
   function handleAddToCart() {
+  let isExists = cartArray.some((elem:any)=>elem.product_id === item._id)
+
+  if (userData){
   let dataToAddInCart = {
-      productId: item._id,
+      product_id: item._id,
       quantity: quantity,
+      user_id: userData.uuid,
+      price:item.price,
     };
-    dispatch({ payload: "addToCart", data: dataToAddInCart });
+    if(!isExists){
+    dispatch("addToCart", dataToAddInCart);
+    // dispatch({ payload: "addToCart", data: dataToAddInCart });
+  } else {
+    dispatch("updateCart", dataToAddInCart);
+  }
     notification(item.productName);
+  } else {
+  notificationError("Please login First");
+}
  }
 
   return (
