@@ -47,7 +47,7 @@ priceSubTotal();
 function handleRemove(product_id:string){
   if(userData){
   let user_id= userData.uuid
-  dispatch("deleteAll", {user_id} );
+  dispatch("removeFromCart", {product_id, user_id} );
 }
 }
 

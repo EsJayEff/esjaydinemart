@@ -33,21 +33,22 @@ if(!res.ok){
 }
 let dataToReturn = await res.json();
 setCartArray((prev:any)=> dataToReturn.allCartData);
+setQuantity(cartArray.length);
+console.log(setQuantity);
 if (dataToReturn){
 return true;
 }
 }
 
 
-useEffect(() => {
-    if (cartArray.length !== 0) {
-        setQuantity(cartArray.length);
-    }else{
-        let zeroVariable=0;
-        setQuantity(zeroVariable);
-    }
-
-}, [cartArray, quantity]);
+// useEffect(() => {
+//     if (cartArray.length !== 0) {
+//         setQuantity(cartArray.length);
+//     }else{
+//         let zeroVariable=0;
+//         setQuantity(zeroVariable);
+//     }
+// }, [cartArray, quantity]);
 
 
 // Function to call on page load
@@ -57,7 +58,7 @@ useEffect(() => {
 
 
 async function dispatch(payload:string, data:any){
-    // console.log("Database Array of Cart:", cartArray);
+    console.log("Database Array of Cart:", cartArray.length);
     if (payload === "addToCart"){
         console.log("Function running for add to cart");
         await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`,{
@@ -80,6 +81,7 @@ async function dispatch(payload:string, data:any){
         setLoading(false);
     } 
     let resp = await fetchApiForAllCartItems();
+    setQuantity(cartArray.length);
     if(resp){
     return "success";
 } else {

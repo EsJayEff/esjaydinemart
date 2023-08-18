@@ -193,8 +193,8 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
                 <h3 className="font-semibold">PRODUCT CARE</h3>
               </div>
               <ul className="pl-3 list-disc font-semibold text-gray-900">
-                <li>Hand wash using cold water.</li>
-                <li>Do not using bleach.</li>
+                <li>Hand wash with cold water.</li>
+                <li>Do not bleach.</li>
                 <li>Hang it to dry.</li>
                 <li>Iron on low temperature.</li>
               </ul>
