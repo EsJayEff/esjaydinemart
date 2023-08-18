@@ -1,6 +1,7 @@
 import React from "react";
 import { Feature} from '@/components/assets'
 import Image from "next/image";
+import Link from "next/link";
 
 const Jewellery = () => {
   return (
@@ -44,7 +45,9 @@ const Jewellery = () => {
        </div>
        <div className="space-y-6 md:space-y-4 p-6">
         <p style={{wordSpacing:"0.8rem"}} className="h-[90%] lg:max-w-[15rem] py-4">This piece is ethically crafted in our small family-owned workshop in Peru with unmatched attention to detail and care. The Natural color is the actual natural color of the fiber, undyed and 100% traceable.</p>
+        <Link href="/products">
         <button className="text-white bg-gray-900 rounded-md py-2 px-6">See All products</button>
+        </Link>
        </div>
        </div>
       </div>

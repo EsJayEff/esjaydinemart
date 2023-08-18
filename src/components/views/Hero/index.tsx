@@ -1,5 +1,6 @@
 import { HeroGirl,Bazaar,Bustle,Versace,InStyle } from '@/components/assets'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 import {BsCart2} from 'react-icons/bs'
 
@@ -14,7 +15,9 @@ return (
     <p className="text-gray-800">Anyone can beat you but no one can beat your outfit as long as you wear Dine outfits.</p>
     <button aria-label="redirect the user to the sale page" className="flex gap-3 bg-gray-900 text-white font-semibold py-4 px-4">
     <BsCart2 size={24}/>
-    <p className="whitespace-pre-line">Start shopping</p>    
+    <Link href="/products">
+    <p className="whitespace-pre-line">Start shopping</p> 
+    </Link>   
     </button> 
     <div className="flex justify-evenly gap-6">
     <div className="w-14 md:w-24">
