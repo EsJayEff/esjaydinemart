@@ -19,7 +19,7 @@ try {
 export async function POST(req: NextRequest) {
     let request = await req.json();
     try {
-        if (request.product_id && request.quantity && request.user_id && request.price){
+        if (request.product_id && request.quantity && request.user_id && request.price && request.image_url && request.product_name && request.product_desc){
         let response = await db.insert(cartTableDrizzle).values(request).returning();
         return NextResponse.json({ response })
     } else {
@@ -58,6 +58,9 @@ export async function DELETE(req: NextRequest) {
                     and(eq(cartTableDrizzle.product_id, (url.get("product_id") as string)),
                     eq(cartTableDrizzle.user_id, (url.get("user_id") as string)))
                 ).returning()
+            return NextResponse.json({ response });
+        } else {
+            let response = await db.delete(cartTableDrizzle).returning()
             return NextResponse.json({ response });
         }
     } catch (error) {

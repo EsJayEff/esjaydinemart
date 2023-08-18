@@ -8,9 +8,7 @@ import {BsCart2} from "react-icons/bs"
 
 const CartState = () => {
     let {cartArray,quantity} = useContext(cartContext);
-  console.log(cartArray.length);
-
-   return (
+    return (
       <div className="flex-shrink-0 relative w-11 h-11 bg-gray-300 rounded-full flex items-center justify-center">
           <Link href="/cart">
           <div

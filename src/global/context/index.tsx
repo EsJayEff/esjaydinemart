@@ -47,13 +47,13 @@ useEffect(() => {
         setQuantity(zeroVariable);
     }
 
-}, [cartArray,quantity])
+}, [cartArray, quantity]);
 
 
 // Function to call on page load
 useEffect(() => {
     fetchApiForAllCartItems();
-}, [userData, cartArray]);
+}, [userData]);
 
 
 async function dispatch(payload:string, data:any){
@@ -78,7 +78,7 @@ async function dispatch(payload:string, data:any){
         });
 
         setLoading(false);
-    }
+    } 
     let resp = await fetchApiForAllCartItems();
     if(resp){
     return "success";

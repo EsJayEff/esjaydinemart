@@ -8,6 +8,7 @@ import { urlFor } from "../../../../../sanity/lib/image";
 import { cartContext } from "@/global/context";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import getStripe from "../../../../lib/getStripe";
 
 interface propsType {
   ProductArray: oneProductType[];
@@ -46,7 +47,7 @@ priceSubTotal();
 function handleRemove(product_id:string){
   if(userData){
   let user_id= userData.uuid
-  dispatch("removeFromCart", {product_id, user_id} );
+  dispatch("deleteAll", {user_id} );
 }
 }
 
@@ -116,6 +117,39 @@ const notificationError = (title: string) => {
 setAllProductsInCart(updatedData);
 } 
 }, [cartArray]);
+
+const handleCheckout = async () => {
+  let lineItems : any = [];
+  cartArray.forEach((cartItem:any) =>
+    lineItems.push({
+    name: cartItem.product_name,
+    description: cartItem.product_desc,
+    images: cartItem.image_url,
+    price: cartItem.price,
+    quantity: cartItem.quantity,       
+}));
+
+ const stripe = await getStripe();
+
+  const checkoutSession = await fetch("/api/stripe-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({lineItems}),
+  });
+
+  const sessionID= await checkoutSession.json();
+  toast.loading("Redirecting...");
+  const result = await stripe?.redirectToCheckout({
+    sessionId: sessionID,
+  });
+  if (result?.error) {
+    alert(result.error.message);
+  }
+
+};
+
 
   return (
     <div className="py-6 px-2 md:px-10">
@@ -190,7 +224,9 @@ setAllProductsInCart(updatedData);
             <p className="text-lg font-light">SubTotal:</p>
             <p>${totalPrice}</p>
           </div>
-          <button className="text-white bg-gray-900 border-gray-800 py-2 px-4 w-full">
+          <button 
+          onClick={()=>handleCheckout()}
+          className="text-white bg-gray-900 border-gray-800 py-2 px-4 w-full">
             Process to Checkout
           </button>
         </div>

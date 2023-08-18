@@ -50,13 +50,17 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
 
   function handleAddToCart() {
   let isExists = cartArray.some((elem:any)=>elem.product_id === item._id)
-
+ 
+  const img = urlFor(item.image[0]).url(); 
   if (userData){
   let dataToAddInCart = {
       product_id: item._id,
       quantity: quantity,
       user_id: userData.uuid,
       price:item.price,
+      image_url:img,
+      product_name: item.productName,
+      product_desc:item.productTypes[1],
     };
     if(!isExists){
     dispatch("addToCart", dataToAddInCart);
