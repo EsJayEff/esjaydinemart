@@ -25,6 +25,7 @@ const [loading, setLoading] = useState(false);
 const [userData, setUserData] = useState<any>();
 let router = useRouter();
 const [quantity, setQuantity] = useState(0);
+const [cartIconquantity, cartIconsetQuantity] = useState(0);
 
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
@@ -32,10 +33,10 @@ if(!res.ok){
     throw new Error ("Failed to Fetch something went wrong")
 }
 let dataToReturn = await res.json();
+router.refresh();
 setCartArray((prev:any)=> dataToReturn.allCartData);
-setQuantity(cartArray.length);
-console.log(setQuantity);
 if (dataToReturn){
+setQuantity(cartArray.length); 
 return true;
 }
 }
@@ -48,7 +49,7 @@ useEffect(() => {
         let zeroVariable=0;
         setQuantity(zeroVariable);
     }
-}, [cartArray, quantity]);
+}, [cartArray]);
 
 
 // Function to call on page load
@@ -58,7 +59,7 @@ useEffect(() => {
 
 
 async function dispatch(payload:string, data:any){
-    console.log("Database Array of Cart:", cartArray.length);
+    
     if (payload === "addToCart"){
         console.log("Function running for add to cart");
         await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`,{
@@ -81,41 +82,17 @@ async function dispatch(payload:string, data:any){
         setLoading(false);
     } 
     let resp = await fetchApiForAllCartItems();
-    setQuantity(cartArray.length);
+    
     if(resp){
+    console.log("Database Array of Cart if success:", cartArray.length);
+    setQuantity(cartArray.length);    
     return "success";
 } else {
+    console.log("Database Array of Cart if empty:", cartArray.length);
+    setQuantity(cartArray.length); 
     return "unsuccessful"
 }
 }
-
-
-
-// cart Management when using local storage for testing
-// const cartInitializer = {
-//     cart:[],
-//  }
-// const [state, dispatch] = useReducer(cartReducer,cartInitializer); 
-
-// useEffect(() => {
-//  let cart = localStorage.getItem("cart") as string;
-
-//  if (cart === null)
-//  {
-//     const ISSERVER = typeof window === "undefined";
-//     if (!ISSERVER) localStorage.setItem("cart", JSON.stringify(state.cart));
-//  }
-//  else {
-//      cartInitializer.cart = JSON.parse(cart);
-//  }
-// })
-
-// useEffect(() =>{ 
-// localStorage.setItem("cart", JSON.stringify(state.cart))
-// },[state.cart])
-
-
-
 
 // User Management 
 
@@ -235,7 +212,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
 
 
 return (
-    <cartContext.Provider value={{cartArray, quantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
+    <cartContext.Provider value={{cartArray, quantity, cartIconquantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
         {children}
     </cartContext.Provider>
   )
