@@ -26,6 +26,13 @@ const [userData, setUserData] = useState<any>();
 let router = useRouter();
 const [quantity, setQuantity] = useState(0);
 
+
+useEffect(() => {
+    if (cartArray.length !== 0) {
+        setQuantity(cartArray.length);
+    }
+}, [cartArray]);
+
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
 if(!res.ok){
@@ -40,14 +47,7 @@ return true;
 }
 
 
-useEffect(() => {
-    if (cartArray.length !== 0) {
-        setQuantity(cartArray.length);
-    }else{
-        let zeroVariable=0;
-        setQuantity(zeroVariable);
-    }
-}, [cartArray]);
+
 
 
 // Function to call on page load
