@@ -41,14 +41,14 @@ return true;
 }
 
 
-// useEffect(() => {
-//     if (cartArray.length !== 0) {
-//         setQuantity(cartArray.length);
-//     }else{
-//         let zeroVariable=0;
-//         setQuantity(zeroVariable);
-//     }
-// }, [cartArray, quantity]);
+useEffect(() => {
+    if (cartArray.length !== 0) {
+        setQuantity(cartArray.length);
+    }else{
+        let zeroVariable=0;
+        setQuantity(zeroVariable);
+    }
+}, [cartArray, quantity]);
 
 
 // Function to call on page load
