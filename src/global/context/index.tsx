@@ -31,7 +31,7 @@ useEffect(() => {
     if (cartArray.length !== 0) {
         setQuantity(cartArray.length);
     }
-}, [cartArray]);
+}, [cartArray,quantity]);
 
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
