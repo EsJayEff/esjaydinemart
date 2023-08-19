@@ -26,7 +26,6 @@ const [userData, setUserData] = useState<any>();
 let router = useRouter();
 const [quantity, setQuantity] = useState(0);
 
-
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
 if(!res.ok){
@@ -44,6 +43,9 @@ return true;
 useEffect(() => {
     if (cartArray.length !== 0) {
         setQuantity(cartArray.length);
+    }else{
+        let zeroVariable=0;
+        setQuantity(zeroVariable);
     }
 }, [cartArray]);
 
@@ -204,7 +206,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
 
 
 return (
-    <cartContext.Provider value={{cartArray, quantity,dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
+    <cartContext.Provider value={{cartArray, quantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
         {children}
     </cartContext.Provider>
   )
