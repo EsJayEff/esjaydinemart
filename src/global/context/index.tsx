@@ -45,9 +45,6 @@ return true;
 useEffect(() => {
     if (cartArray.length !== 0) {
         setQuantity(cartArray.length);
-    }else{
-        let zeroVariable=0;
-        setQuantity(zeroVariable);
     }
 }, [cartArray]);
 
@@ -84,13 +81,9 @@ async function dispatch(payload:string, data:any){
     let resp = await fetchApiForAllCartItems();
     
     if(resp){
-    console.log("Database Array of Cart if success:", cartArray.length);
-    setQuantity(cartArray.length);    
-    return "success";
+  return "success";
 } else {
-    console.log("Database Array of Cart if empty:", cartArray.length);
-    setQuantity(cartArray.length); 
-    return "unsuccessful"
+  return "unsuccessful"
 }
 }
 
