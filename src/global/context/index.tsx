@@ -27,11 +27,11 @@ let router = useRouter();
 const [quantity, setQuantity] = useState(0);
 
 
-useEffect(() => {
-    if (cartArray.length !== 0) {
-        setQuantity(cartArray.length);
-    }
-}, [cartArray,quantity]);
+// useEffect(() => {
+//     if (cartArray.length !== 0) {
+//         setQuantity(cartArray.length);
+//     }
+// }, [cartArray,quantity]);
 
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
@@ -42,6 +42,10 @@ let dataToReturn = await res.json();
 router.refresh();
 setCartArray((prev:any)=> dataToReturn.allCartData);
 if (dataToReturn){
+    if (cartArray.length !== 0) 
+    {
+    setQuantity(cartArray.length);
+    }
 return true;
 }
 }
@@ -206,7 +210,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
 
 
 return (
-    <cartContext.Provider value={{cartArray, quantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
+    <cartContext.Provider value={{cartArray, quantity, setQuantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
         {children}
     </cartContext.Provider>
   )
