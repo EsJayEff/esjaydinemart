@@ -5,7 +5,7 @@ import {
   imagesType,
   oneProductType,
 } from "@/components/utils/ProductsDataArrayAndType";
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { client } from "../../../../sanity/lib/client";
 import imageUrlBuilder from "@sanity/image-url";
 import { BsCart2 } from "react-icons/bs";
@@ -23,7 +23,7 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
   const [imageForPreviewOfSelected, setImageForPreviewOfSelected] =
     useState<string>(item.image[0]._key);
   const [quantity, setQuantity] = useState(1);
-
+ 
   function incrementTheQuantity() {
     setQuantity(quantity + 1);
   }
@@ -63,8 +63,8 @@ const ProductDetail: FC<{ item: oneProductType }> = ({ item }) => {
       product_desc:item.productTypes[1],
     };
     if(!isExists){
-    dispatch("addToCart", dataToAddInCart);
-    // dispatch({ payload: "addToCart", data: dataToAddInCart });
+     dispatch("addToCart", dataToAddInCart);
+      // dispatch({ payload: "addToCart", data: dataToAddInCart });
   } else {
     dispatch("updateCart", dataToAddInCart);
   }

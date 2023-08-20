@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Image from 'next/image'
 import { NavbarArray, NavbarItemType} from '@/components/utils/NavbarArrayAndTypes'
 import Link from 'next/link'
@@ -14,11 +14,14 @@ import { useRouter } from "next/navigation";
 import ContextWrapper from "@/global/context";
 import CartState from "./subComponents/CartState";
 
+
+
+
 const Navbar = () => {
   const router = useRouter();
    const [isNavBarOpen, setisNavBarOpen] = useState<boolean>(false);
    const [searchQuery, setSearchQuery] = useState("");
-
+  
   function handleSearch(e:any){
     if (e.key === "Enter" && e.keycode === 13)
     {

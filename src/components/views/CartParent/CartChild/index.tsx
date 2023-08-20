@@ -23,8 +23,7 @@ const CartComponent = ({
   let {userData, cartArray, dispatch, loading} = useContext(cartContext);
   const [totalPrice, setTotalPrice] = useState(0);
   let router = useRouter();
-
-
+  
 function priceSubTotal(){
   let originalToSend: number = 0;
   allProductsInCart && allProductsInCart.forEach((element: oneProductType) => {

@@ -1,7 +1,6 @@
 "use client";
 
 import React,{FC, ReactNode, createContext, useEffect, useReducer, useState} from 'react'
-import { cartReducer } from '../reducer';
 import { auth } from '@/lib/firebase';
 import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
@@ -24,14 +23,17 @@ const [cartArray, setCartArray] = useState<any>([]);
 const [loading, setLoading] = useState(false);
 const [userData, setUserData] = useState<any>();
 let router = useRouter();
-const [quantity, setQuantity] = useState(0);
+const [cartQuantity, setCartQuantity] = useState(0);
 
-
-// useEffect(() => {
-//     if (cartArray.length !== 0) {
-//         setQuantity(cartArray.length);
-//     }
-// }, [cartArray,quantity]);
+useEffect(() => {
+    fetchApiForAllCartItems();
+    if (cartArray.length !== 0) {
+            setCartQuantity(cartArray.length);
+        } else {
+            const zeroVariable =0;
+            setCartQuantity(zeroVariable);
+        }
+    }, [cartArray,cartQuantity]);
 
 async function fetchApiForAllCartItems(){
 let res = await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`);
@@ -41,27 +43,21 @@ if(!res.ok){
 let dataToReturn = await res.json();
 router.refresh();
 setCartArray((prev:any)=> dataToReturn.allCartData);
-if (dataToReturn){
-    if (cartArray.length !== 0) 
-    {
-    setQuantity(cartArray.length);
-    }
+if (dataToReturn && cartArray){
 return true;
 }
 }
 
-
-
-
-
 // Function to call on page load
 useEffect(() => {
     fetchApiForAllCartItems();
+     if (cartArray.length !== 0) {
+            setCartQuantity(cartArray.length);
+        }
 }, [userData]);
 
 
 async function dispatch(payload:string, data:any){
-    
     if (payload === "addToCart"){
         console.log("Function running for add to cart");
         await fetch(`${BASE_PATH_FOR_API}/api/cartfunc`,{
@@ -86,7 +82,9 @@ async function dispatch(payload:string, data:any){
     let resp = await fetchApiForAllCartItems();
     
     if(resp){
-  return "success";
+        setCartQuantity(cartArray.length);
+        console.log("From dispatch", cartArray.length);
+ return "success";
 } else {
   return "unsuccessful"
 }
@@ -210,7 +208,7 @@ function updateUserNamePhoto(userName: string, photoURL?: string) {
 
 
 return (
-    <cartContext.Provider value={{cartArray, quantity, setQuantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
+    <cartContext.Provider value={{cartArray, cartQuantity, fetchApiForAllCartItems, setCartQuantity, dispatch, signUpUser, signInUser, LogOut,signUpViaGoogle,loading,errorsOfFirebase, userData, updateUserNamePhoto,sendEmailVerificationCode}}>
         {children}
     </cartContext.Provider>
   )
