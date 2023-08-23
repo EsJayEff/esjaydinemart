@@ -2,7 +2,7 @@ import SignInForm from "@/components/views/SignInForm"
 import ContextWrapper from "@/global/context"
 
 const SignIn = () => {
-    return (
+return (
         <ContextWrapper>
             <SignInForm />
         </ContextWrapper>
