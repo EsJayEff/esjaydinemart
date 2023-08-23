@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import {getAuth} from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCU4t5LGkLoEfTHeGfwDn868czQXiFGIo0",
+  apiKey: `${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`,
   authDomain: "esjaydinemart.firebaseapp.com",
   projectId: "esjaydinemart",
   storageBucket: "esjaydinemart.appspot.com",
-  messagingSenderId:"156686796673",
-  appId: "1:156686796673:web:6481f3a95cf6ddfe2f8a80",
+  messagingSenderId:`${process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}`,
+  appId: `${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}`,
 };
 
 // Initialize Firebase
